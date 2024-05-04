@@ -19,23 +19,30 @@ class Database:
     try:
       self.__transform_to_sql(self.engine)
     except:
-      return self.custom_error.error("Erro ao criar o banco");
+      return self.custom_error.error("Error on db creation");
     
   def create_db_on_mysql(self):
     pass
     
   def create_db_on_sql_server(self):
     pass
+    
+  def create_db_on_sqlite(self):
+    pass
+    
+  def create_db_on_oracle(self):
+    pass
   
   def __transform_to_sql(self, engine):
     self.file.to_sql(self.table_name, engine, index=False, if_exists='fail')
     
-  def test_conn(self):
-    conn = self.engine.connect()
+  def test_conn(self, engine_selection):
+    if engine_selection == "Postgres":
+      self.engine = create_engine(f'postgresql+psycopg2://{self.user}:{self.password}@{self.host}:5432/{self.db_name}')
     
     try:
+      conn = self.engine.connect()
       conn.close()
-      
       return True
     except:
-      return self.custom_error.error("Falha na conexão")
+      return False
